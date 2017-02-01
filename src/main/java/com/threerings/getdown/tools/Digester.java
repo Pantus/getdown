@@ -38,7 +38,7 @@ public class Digester
     {
         switch (args.length) {
         case 1:
-            createDigests(new File(args[0]), null, null, null);
+            createConfDigests(new File(args[0]), null, null, null);
             break;
         case 4:
             createDigests(new File(args[0]), new File(args[1]), args[2], args[3]);
@@ -64,6 +64,20 @@ public class Digester
     }
 
     /**
+     * Creates digest file(s) and optionally signs them if {@code keystore} is not null.
+     */
+    public static void createConfDigests (File appdir, File keystore, String password, String alias)
+            throws IOException, GeneralSecurityException
+    {
+        for (int version = 1; version <= Digest.VERSION; version++) {
+            createConfDigest(version, appdir);
+            if (keystore != null) {
+                signDigest(version, appdir, keystore, password, alias);
+            }
+        }
+    }
+
+    /**
      * Creates a digest file in the specified application directory.
      */
     public static void createDigest (int version, File appdir)
@@ -80,6 +94,30 @@ public class Digester
         rsrcs.add(app.getConfigResource());
         rsrcs.addAll(app.getCodeResources());
         rsrcs.addAll(app.getResources());
+        for (Application.AuxGroup ag : app.getAuxGroups()) {
+            rsrcs.addAll(ag.codes);
+            rsrcs.addAll(ag.rsrcs);
+        }
+
+        // now generate the digest file
+        Digest.createDigest(version, rsrcs, target);
+    }
+
+    /**
+     * Creates a digest for conf file in the specified application directory.
+     */
+    public static void createConfDigest (int version, File appdir)
+            throws IOException
+    {
+        File target = new File(appdir, Digest.digestFile(version));
+        System.out.println("Generating digest file '" + target + "'...");
+
+        // create our application and instruct it to parse its business
+        Application app = new Application(appdir, null);
+        app.init(false);
+
+        List<Resource> rsrcs = new ArrayList<Resource>();
+        rsrcs.add(app.getConfigResource());
         for (Application.AuxGroup ag : app.getAuxGroups()) {
             rsrcs.addAll(ag.codes);
             rsrcs.addAll(ag.rsrcs);
