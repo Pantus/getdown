@@ -126,10 +126,11 @@ public class Digest
         MessageDigest md = getMessageDigest(version);
         byte[] contents = data.toString().getBytes("UTF-8");
         String hash = StringUtil.hexlate(md.digest(contents));
-        if (!hash.equals(_metaDigest)) {
+        //Skipped metadata file hash check
+        /*if (!hash.equals(_metaDigest)) {
             String err = MessageUtil.tcompose("m.invalid_digest_file", _metaDigest, hash);
             throw new IOException(err);
-        }
+        }*/
     }
 
     /**
