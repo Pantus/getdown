@@ -38,7 +38,7 @@ public class Digester
     {
         switch (args.length) {
         case 1:
-            createConfDigests(new File(args[0]), null, null, null);
+            createDigests(new File(args[0]), null, null, null);
             break;
         case 4:
             createDigests(new File(args[0]), new File(args[1]), args[2], args[3]);
