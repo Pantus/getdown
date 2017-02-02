@@ -610,12 +610,12 @@ public abstract class Getdown extends Thread
             // No biggie, we'll try the generic one.
         }
 
-        // If that didn't work, try a generic one.
+        // If that didn't work, try the classpath ones.
         try {
-            imgpath = _app.getLocalPath(path);
+            imgpath = new File(getClass().getClassLoader().getResource("qulto/" + path).getFile());
             return ImageIO.read(imgpath);
         } catch (IOException ioe2) {
-            log.warning("Failed to load image", "path", imgpath, "error", ioe2);
+            log.warning("Failed to load classpath image", "path", imgpath, "error", ioe2);
             return null;
         }
     }

@@ -118,10 +118,10 @@ public class Digester
 
         List<Resource> rsrcs = new ArrayList<Resource>();
         rsrcs.add(app.getConfigResource());
-        for (Application.AuxGroup ag : app.getAuxGroups()) {
+        /*for (Application.AuxGroup ag : app.getAuxGroups()) {
             rsrcs.addAll(ag.codes);
             rsrcs.addAll(ag.rsrcs);
-        }
+        }*/
 
         // now generate the digest file
         Digest.createDigest(version, rsrcs, target);
