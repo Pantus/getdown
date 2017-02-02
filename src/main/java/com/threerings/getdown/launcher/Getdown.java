@@ -601,6 +601,7 @@ public abstract class Getdown extends Thread
         }
 
         File imgpath = null;
+        InputStream imgstream = null;
         try {
             // First try for a localized image.
             String localeStr = Locale.getDefault().getLanguage();
@@ -612,8 +613,8 @@ public abstract class Getdown extends Thread
 
         // If that didn't work, try the classpath ones.
         try {
-            imgpath = new File(getClass().getClassLoader().getResource("qulto/" + path).getFile());
-            return ImageIO.read(imgpath);
+            imgstream = getClass().getClassLoader().getResourceAsStream("qulto/" + path);
+            return ImageIO.read(imgstream);
         } catch (IOException ioe2) {
             log.warning("Failed to load classpath image", "path", imgpath, "error", ioe2);
             return null;
