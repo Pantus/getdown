@@ -38,7 +38,7 @@ public class Digester
     {
         switch (args.length) {
         case 1:
-            createDigests(new File(args[0]), null, null, null);
+            createConfDigests(new File(args[0]), null, null, null);
             break;
         case 4:
             createDigests(new File(args[0]), new File(args[1]), args[2], args[3]);
@@ -106,7 +106,7 @@ public class Digester
     /**
      * Creates a digest for conf file in the specified application directory.
      */
-    public static void createConfDigest (int version, File appdir)
+    public static List<String> createConfDigest (int version, File appdir)
             throws IOException
     {
         File target = new File(appdir, Digest.digestFile(version));
@@ -124,7 +124,7 @@ public class Digester
         }*/
 
         // now generate the digest file
-        Digest.createDigest(version, rsrcs, target);
+        return Digest.createDigestList(version, rsrcs);
     }
 
     /**

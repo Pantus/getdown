@@ -12,8 +12,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 import com.samskivert.io.StreamUtil;
 import com.samskivert.text.MessageUtil;
@@ -79,6 +80,30 @@ public class Digest
         } finally {
             StreamUtil.close(pout);
         }
+    }
+
+    public static ArrayList<String> createDigestList (int version, List<Resource> resources)
+            throws IOException
+    {
+        MessageDigest md = getMessageDigest(version);
+        StringBuilder data = new StringBuilder();
+        ArrayList<String> dList = new ArrayList<String>();
+
+        // compute and append the digest of each resource in the list
+        for (Resource rsrc : resources) {
+            String path = rsrc.getPath();
+
+            String digest = rsrc.computeDigest(version, md, null);
+            note(data, path, digest);
+            dList.add(path + " = " + digest);
+
+            // finally compute and append the digest for the file contents
+            md.reset();
+            byte[] contents = data.toString().getBytes("UTF-8");
+            String filename = digestFile(version);
+            dList.add(filename + " = " + StringUtil.hexlate(md.digest(contents)));
+        }
+        return dList;
     }
 
     /**
