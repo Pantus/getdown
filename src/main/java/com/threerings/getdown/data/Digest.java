@@ -96,13 +96,13 @@ public class Digest
             String digest = rsrc.computeDigest(version, md, null);
             note(data, path, digest);
             dList.add(path + " = " + digest);
-
+        }
             // finally compute and append the digest for the file contents
             md.reset();
             byte[] contents = data.toString().getBytes("UTF-8");
             String filename = digestFile(version);
             dList.add(filename + " = " + StringUtil.hexlate(md.digest(contents)));
-        }
+
         return dList;
     }
 
