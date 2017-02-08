@@ -1204,7 +1204,7 @@ public class Application
             _digest = new Digest(_appdir);
         }
 
-        /*// now verify the contents of our main config file
+        // now verify the contents of our main config file
         Resource crsrc = getConfigResource();
         if (!_digest.validateResource(crsrc, null)) {
             status.updateStatus("m.updating_metadata");
@@ -1222,7 +1222,7 @@ public class Application
                 log.warning(CONFIG_FILE + " failed to validate even after redownloading. " +
                             "Blindly forging onward.");
             }
-        }*/
+        }
 
         // start by assuming we are happy with our version
         _targetVersion = _version;
@@ -1264,6 +1264,28 @@ public class Application
 
         // finally let the caller know if we need an update
         return _version != _targetVersion;
+    }
+
+    public void setTargetedVersion() {
+        if (_latest != null) {
+            InputStream in = null;
+            PrintStream out = null;
+            try {
+                in = ConnectionUtil.open(_latest).getInputStream();
+                BufferedReader bin = new BufferedReader(new InputStreamReader(in));
+                for (String[] pair : ConfigUtil.parsePairs(bin, false)) {
+                    if (pair[0].equals("version")) {
+                        _targetVersion = Math.max(Long.parseLong(pair[1]), _targetVersion);
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                log.warning("Unable to retrieve version from latest config file.", e);
+            } finally {
+                StreamUtil.close(in);
+                StreamUtil.close(out);
+            }
+        }
     }
 
     /**
@@ -1414,7 +1436,7 @@ public class Application
     /**
      * Downloads a new copy of CONFIG_FILE.
      */
-    protected void downloadConfigFile ()
+    public void downloadConfigFile ()
         throws IOException
     {
         downloadControlFile(CONFIG_FILE, false);
@@ -1745,6 +1767,10 @@ public class Application
         cookie.append("utmcsr%3D(direct)%7Cutmccn%3D(direct)%7Cutmcmd%3D(none)%3B");
         cookie.append("&utmn=").append(RandomUtil.getInRange(1000000000, 2000000000));
         return cookie.toString();
+    }
+
+    public Long getTargetVersion () {
+        return _targetVersion;
     }
 
     /**

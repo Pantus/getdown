@@ -544,8 +544,12 @@ public abstract class Getdown extends Thread
                             }
                         }
                     }*/
+                    _app.setTargetedVersion();
 
-                    download(_app.getAllActiveResources());
+                    if(_app.getVersion() < _app.getTargetVersion()) {
+                        _app.downloadConfigFile();
+                        download(_app.getAllActiveResources());
+                    }
 
                     // assuming we're not doing anything funny, install the update
                     _readyToInstall = true;
