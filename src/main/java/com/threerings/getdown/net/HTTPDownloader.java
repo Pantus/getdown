@@ -78,7 +78,8 @@ public class HTTPDownloader extends Downloader
         long currentSize = 0L;
         try {
             in = conn.getInputStream();
-            out = new FileOutputStream(rsrc.getLocalNew());
+//            out = new FileOutputStream(rsrc.getLocalNew());
+            out = new FileOutputStream(rsrc.getLocal());
             int read;
 
             // TODO: look to see if we have a download info file

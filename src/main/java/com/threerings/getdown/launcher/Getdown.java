@@ -502,25 +502,26 @@ public abstract class Getdown extends Thread
                 }
 
                 // make sure we have the desired version and that the metadata files are valid...
-                setStep(Step.VERIFY_METADATA);
+                /*setStep(Step.VERIFY_METADATA);
                 setStatusAsync("m.validating", -1, -1L, false);
                 if (_app.verifyMetadata(this)) {
                     log.info("Application requires update.");
                     update();
                     // loop back again and reverify the metadata
                     continue;
-                }
+                }*/
 
                 // now verify our resources...
                 setStep(Step.VERIFY_RESOURCES);
                 setStatusAsync("m.validating", -1, -1L, false);
-                List<Resource> failures = _app.verifyResources(_progobs, alreadyValid, unpacked);
+//                List<Resource> failures = _app.verifyResources(_progobs, alreadyValid, unpacked);
+                List<Resource> failures = null;
                 if (failures == null) {
                     log.info("Resources verified.");
 
                     // if we were downloaded in full from another service (say, Steam), we may
                     // not have unpacked all of our resources yet
-                    if (Boolean.getBoolean("check_unpacked")) {
+                    /*if (Boolean.getBoolean("check_unpacked")) {
                         File ufile = _app.getLocalPath("unpacked.dat");
                         long version = -1;
                         long aversion = _app.getVersion();
@@ -542,7 +543,9 @@ public abstract class Getdown extends Thread
                                 log.warning("Failed to update unpacked version", ioe);
                             }
                         }
-                    }
+                    }*/
+
+                    download(_app.getAllActiveResources());
 
                     // assuming we're not doing anything funny, install the update
                     _readyToInstall = true;
