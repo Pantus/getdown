@@ -234,6 +234,17 @@ public class Application
         _extraAppArgs = (appargs == null) ? ArrayUtil.EMPTY_STRING : appargs;
     }
 
+    public Application (File appdir, String appid,
+                        String[] jvmargs, String[] appargs)
+    {
+        _appdir = appdir;
+        _appid = appid;
+        _signers = Collections.<Certificate>emptyList();
+        _config = getLocalPath(CONFIG_FILE);
+        _extraJvmArgs = (jvmargs == null) ? ArrayUtil.EMPTY_STRING : jvmargs;
+        _extraAppArgs = (appargs == null) ? ArrayUtil.EMPTY_STRING : appargs;
+    }
+
     /**
      * Returns the configured application directory.
      */
@@ -1193,7 +1204,7 @@ public class Application
             _digest = new Digest(_appdir);
         }
 
-        // now verify the contents of our main config file
+        /*// now verify the contents of our main config file
         Resource crsrc = getConfigResource();
         if (!_digest.validateResource(crsrc, null)) {
             status.updateStatus("m.updating_metadata");
@@ -1211,7 +1222,7 @@ public class Application
                 log.warning(CONFIG_FILE + " failed to validate even after redownloading. " +
                             "Blindly forging onward.");
             }
-        }
+        }*/
 
         // start by assuming we are happy with our version
         _targetVersion = _version;
@@ -1297,7 +1308,8 @@ public class Application
             }
 
             try {
-                if (_digest.validateResource(rsrc, robs)) {
+//                if (_digest.validateResource(rsrc, robs)) {
+                if (true) {
                     // unpack this resource if appropriate
                     if (noUnpack || !rsrc.shouldUnpack()) {
                         // finally note that this resource is kosher

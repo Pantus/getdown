@@ -32,7 +32,7 @@ public class ResourceCache
      */
     public File cacheFile (File fileToCache, String digest) throws IOException
     {
-        File cacheLocation = new File(_cacheDir, digest.substring(0, 2));
+        File cacheLocation = new File(_cacheDir, digest);
         createDirectoryIfNecessary(cacheLocation);
 
         File cachedFile = new File(cacheLocation, digest + getFileSuffix(fileToCache));

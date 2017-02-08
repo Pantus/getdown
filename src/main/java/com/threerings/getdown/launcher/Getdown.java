@@ -128,6 +128,41 @@ public abstract class Getdown extends Thread
         _startup = System.currentTimeMillis();
     }
 
+    public Getdown (File appDir, String appId,
+                    String[] jvmargs, String[] appargs)
+    {
+        super("Getdown");
+        try {
+            // If the silent property exists, install without bringing up any gui. If it equals
+            // launch, start the application after installing. Otherwise, just install and exit.
+            _silent = SysProps.silent();
+            if (_silent) {
+                _launchInSilent = SysProps.launchInSilent();
+            }
+            _delay = SysProps.startDelay();
+            _noInstall = SysProps.noInstall();
+        } catch (SecurityException se) {
+            // don't freak out, just assume non-silent and no delay; we're probably already
+            // recovering from a security failure
+        }
+        try {
+            _msgs = ResourceBundle.getBundle("com.threerings.getdown.messages");
+        } catch (Exception e) {
+            // welcome to hell, where java can't cope with a classpath that contains jars that live
+            // in a directory that contains a !, at least the same bug happens on all platforms
+            String dir = appDir.toString();
+            if (dir.equals(".")) {
+                dir = System.getProperty("user.dir");
+            }
+            String errmsg = "The directory in which this application is installed:\n" + dir +
+                    "\nis invalid (" + e.getMessage() + "). If the full path to the app directory " +
+                    "contains the '!' character, this will trigger this error.";
+            fail(errmsg);
+        }
+        _app = new Application(appDir, appId, jvmargs, appargs);
+        _startup = System.currentTimeMillis();
+    }
+
     /**
      * Returns true if there are pending new resources, waiting to be installed.
      */
