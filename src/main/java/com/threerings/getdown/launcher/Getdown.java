@@ -545,9 +545,11 @@ public abstract class Getdown extends Thread
                         }
                     }*/
                     _app.setTargetedVersion();
-                    //TODO only download files that are missing
-                    if(_app.getVersion() < _app.getTargetVersion() || _app.localFilesMissing()) {
+
+                    if(_app.getVersion() < _app.getTargetVersion()) {
                         _app.downloadConfigFile();
+                        download(_app.getAllActiveResources());
+                    } else if (_app.localFilesMissing()) {
                         download(_app.getMissingResources());
                     }
 
