@@ -62,6 +62,17 @@ public class Application
     /** A special classname that means 'use -jar code.jar' instead of a classname. */
     public static final String MANIFEST_CLASS = "manifest";
 
+    public boolean localFilesMissing() {
+        List<Resource> rsrcs = getAllActiveResources();
+
+        for(Resource r : rsrcs) {
+            if(r._local != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** Used to communicate information about the UI displayed when updating the application. */
     public static class UpdateInterface
     {

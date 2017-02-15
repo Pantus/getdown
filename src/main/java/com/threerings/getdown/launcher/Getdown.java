@@ -546,7 +546,7 @@ public abstract class Getdown extends Thread
                     }*/
                     _app.setTargetedVersion();
 
-                    if(_app.getVersion() < _app.getTargetVersion()) {
+                    if(_app.getVersion() < _app.getTargetVersion() || _app.localFilesMissing()) {
                         _app.downloadConfigFile();
                         download(_app.getAllActiveResources());
                     }
