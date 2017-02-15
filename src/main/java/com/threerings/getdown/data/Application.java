@@ -67,10 +67,16 @@ public class Application
 
         for(Resource r : rsrcs) {
             if(!r.getLocal().exists()) {
-                return true;
+                _mResources.add(r);
             }
         }
-        return false;
+
+        return !_mResources.isEmpty();
+
+    }
+
+    public List<Resource> getMissingResources() {
+        return _mResources;
     }
 
     /** Used to communicate information about the UI displayed when updating the application. */
@@ -1853,6 +1859,7 @@ public class Application
 
     protected List<Resource> _codes = new ArrayList<Resource>();
     protected List<Resource> _resources = new ArrayList<Resource>();
+    protected List<Resource> _mResources = new ArrayList<Resource>();
 
     protected boolean _useCodeCache;
     protected int _codeCacheRetentionDays;
