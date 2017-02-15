@@ -57,7 +57,7 @@ public class ClassPaths
         ResourceCache cache = new ResourceCache(cacheDir);
         LinkedHashSet<File> classPathEntries = new LinkedHashSet<File>();
         for (Resource resource: app.getActiveCodeResources()) {
-            File entry = cache.cacheFile(resource.getFinalTarget(), Long.toString(app.getVersion()));
+            File entry = cache.cacheFile(resource.getFinalTarget(), Long.toString(app.getTargetVersion()));
             classPathEntries.add(entry);
         }
 

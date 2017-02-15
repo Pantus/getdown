@@ -66,7 +66,7 @@ public class Application
         List<Resource> rsrcs = getAllActiveResources();
 
         for(Resource r : rsrcs) {
-            if(r._local == null) {
+            if(!r.getLocal().exists()) {
                 return true;
             }
         }
