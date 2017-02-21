@@ -82,6 +82,11 @@ public class Digest
         }
     }
 
+    /**
+     * Creates a digest list of strings using the supplied list of resources.
+     * @param version the version of the digest protocol to use.
+     * @return a list of strings that contains the lines of a digest for the requested version
+     */
     public static ArrayList<String> createDigestList (int version, List<Resource> resources)
             throws IOException
     {

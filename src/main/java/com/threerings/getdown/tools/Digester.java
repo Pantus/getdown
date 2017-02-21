@@ -64,7 +64,7 @@ public class Digester
     }
 
     /**
-     * Creates digest file(s) and optionally signs them if {@code keystore} is not null.
+     * Creates digest List<String>-s and optionally signs them if {@code keystore} is not null.
      */
     public static void createConfDigests (File appdir, File keystore, String password, String alias)
             throws IOException, GeneralSecurityException
@@ -104,7 +104,8 @@ public class Digester
     }
 
     /**
-     * Creates a digest file in the specified application directory.
+     * Creates digests for every resource.
+     * @return A List of Strings that contains the lines of the digest file
      */
     public static List<String> createDigestList (int version, File appdir)
             throws IOException
@@ -130,13 +131,13 @@ public class Digester
     }
 
     /**
-     * Creates a digest for conf file in the specified application directory.
+     * Creates a digest for the config file.
+     * @return A List of Strings that would be the lines of the digest File
      */
     public static List<String> createConfDigest (int version, File appdir)
             throws IOException
     {
-        File target = new File(appdir, Digest.digestFile(version));
-        System.out.println("Generating digest file '" + target + "'...");
+        System.out.println("Generating digest file '" + Digest.digestFile(version) + "'...");
 
         // create our application and instruct it to parse its business
         Application app = new Application(appdir, null);
