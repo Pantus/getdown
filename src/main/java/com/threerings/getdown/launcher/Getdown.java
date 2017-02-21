@@ -501,56 +501,66 @@ public abstract class Getdown extends Thread
                     continue;
                 }
 
-                // make sure we have the desired version and that the metadata files are valid...
-                /*setStep(Step.VERIFY_METADATA);
-                setStatusAsync("m.validating", -1, -1L, false);
-                if (_app.verifyMetadata(this)) {
-                    log.info("Application requires update.");
-                    update();
-                    // loop back again and reverify the metadata
-                    continue;
-                }*/
+                if(_app.is_digestCheck()) {
+                    // make sure we have the desired version and that the metadata files are valid...
+                    setStep(Step.VERIFY_METADATA);
+                    setStatusAsync("m.validating", -1, -1L, false);
+                    if (_app.verifyMetadata(this)) {
+                        log.info("Application requires update.");
+                        update();
+                        // loop back again and reverify the metadata
+                        continue;
+                    }
+                }
 
                 // now verify our resources...
                 setStep(Step.VERIFY_RESOURCES);
                 setStatusAsync("m.validating", -1, -1L, false);
-//                List<Resource> failures = _app.verifyResources(_progobs, alreadyValid, unpacked);
                 List<Resource> failures = null;
+
+                if(_app.is_digestCheck()) {
+                    failures = _app.verifyResources(_progobs, alreadyValid, unpacked);
+                }
                 if (failures == null) {
                     log.info("Resources verified.");
 
-                    // if we were downloaded in full from another service (say, Steam), we may
-                    // not have unpacked all of our resources yet
-                    /*if (Boolean.getBoolean("check_unpacked")) {
-                        File ufile = _app.getLocalPath("unpacked.dat");
-                        long version = -1;
-                        long aversion = _app.getVersion();
-                        if (!ufile.exists()) {
-                            ufile.createNewFile();
-                        } else {
-                            version = VersionUtil.readVersion(ufile);
-                        }
+                    if (_app.is_digestCheck()) {
+                        // if we were downloaded in full from another service (say, Steam), we may
+                        // not have unpacked all of our resources yet
+                        if (Boolean.getBoolean("check_unpacked")) {
+                            File ufile = _app.getLocalPath("unpacked.dat");
+                            long version = -1;
+                            long aversion = _app.getVersion();
+                            if (!ufile.exists()) {
+                                ufile.createNewFile();
+                            } else {
+                                version = VersionUtil.readVersion(ufile);
+                            }
 
-                        if (version < aversion) {
-                            log.info("Performing unpack.",
-                                    "version", version, "aversion", aversion);
-                            setStep(Step.UNPACK);
-                            updateStatus("m.validating");
-                            _app.unpackResources(_progobs, unpacked);
-                            try {
-                                VersionUtil.writeVersion(ufile, aversion);
-                            } catch (IOException ioe) {
-                                log.warning("Failed to update unpacked version", ioe);
+                            if (version < aversion) {
+                                log.info("Performing unpack.",
+                                        "version", version, "aversion", aversion);
+                                setStep(Step.UNPACK);
+                                updateStatus("m.validating");
+                                _app.unpackResources(_progobs, unpacked);
+                                try {
+                                    VersionUtil.writeVersion(ufile, aversion);
+                                } catch (IOException ioe) {
+                                    log.warning("Failed to update unpacked version", ioe);
+                                }
                             }
                         }
-                    }*/
-                    _app.setTargetedVersion();
+                    }
 
-                    if(_app.getVersion() < _app.getTargetVersion()) {
-                        _app.downloadConfigFile();
-                        download(_app.getAllActiveResources());
-                    } else if (_app.localFilesMissing()) {
-                        download(_app.getMissingResources());
+                    if(!_app.is_digestCheck()) {
+                        _app.setTargetedVersion();
+                        if (_app.getVersion() < _app.getTargetVersion() && _app.is_updateToNewer()
+                                || _app.getVersion() == _app.getTargetVersion() && !_app.is_updateToNewer()) {
+                            _app.downloadConfigFile();
+                            download(_app.getAllActiveResources());
+                        } else if (_app.localFilesMissing()) {
+                            download(_app.getMissingResources());
+                        }
                     }
 
                     // assuming we're not doing anything funny, install the update

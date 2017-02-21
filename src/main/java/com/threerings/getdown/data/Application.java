@@ -514,6 +514,14 @@ public class Application
         return _trackingCookieProperty;
     }
 
+    public boolean is_updateToNewer() {
+        return _updateToNewer;
+    }
+
+    public boolean is_digestCheck() {
+        return _digestCheck;
+    }
+
     /**
      * Instructs the application to parse its {@code getdown.txt} configuration and prepare itself
      * for operation. The application base URL will be parsed first so that if there are errors
@@ -575,6 +583,14 @@ public class Application
         // extract our version information
         String vstr = (String)cdata.get("version");
         if (vstr != null) _version = parseLong(vstr, "m.invalid_version");
+
+        // extract how to proceed with our version information+
+        vstr = (String)cdata.get("update_to_newer");
+        _updateToNewer = Boolean.parseBoolean(vstr);
+
+        // extract the state of the digest switch
+        vstr = (String)cdata.get("digest_check");
+        _digestCheck = Boolean.parseBoolean(vstr);
 
         // if we are a versioned deployment, create a versioned appbase
         try {
@@ -1833,6 +1849,8 @@ public class Application
 
     protected long _version = -1;
     protected long _targetVersion = -1;
+    protected boolean _updateToNewer = true;
+    protected boolean _digestCheck = true;
     protected String _appbase;
     protected URL _vappbase;
     protected URL _latest;
