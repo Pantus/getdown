@@ -17,7 +17,9 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.security.*;
+import java.sql.Timestamp;
 import java.security.cert.Certificate;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1054,7 +1056,16 @@ public class Application
         String[] sargs = args.toArray(new String[args.size()]);
         log.info("Running " + StringUtil.join(sargs, "\n  "));
 
-        return Runtime.getRuntime().exec(sargs, envp, _appdir);
+        ProcessBuilder processBuilder = new ProcessBuilder(sargs);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String ts = new SimpleDateFormat("yyy_MM_dd_HH_mm_ss").format(timestamp);
+
+        File logFile = new File(_appdir, "hunteka_" + ts  + ".log");
+        logFile.createNewFile();
+        processBuilder.redirectError(logFile);
+        processBuilder.redirectOutput(logFile);
+
+        return processBuilder.start();
     }
 
     /**

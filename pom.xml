@@ -78,13 +78,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>java</groupId>
-      <artifactId>plugin</artifactId>
-      <version>1.5</version>
-      <scope>system</scope>
-      <systemPath>${plugin.jar.path}</systemPath>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.8.1</version>
@@ -99,6 +92,7 @@
   </dependencies>
 
   <build>
+    <finalName>getdown</finalName>
     <resources>
       <resource> <!-- reiterate standard dir since we're customizing, yay! -->
         <directory>src/main/resources</directory>
